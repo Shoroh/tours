@@ -13,17 +13,17 @@ app.controller('MainController', function($scope){
   $scope.master = {};
 
   $scope.cancel = function() {
-    $scope.toggleForm();
+    toggleForm();
   }
 
-  $scope.toggleForm = function() {
+  function toggleForm() {
     $scope.showTheForm = !$scope.showTheForm
-    $scope.reset();
+    reset();
   }
 
   $scope.newTour = function () {
     $scope.tourIsNew = true;
-    $scope.toggleForm();
+    toggleForm();
   }
 
   $scope.addOrUpdateTour = function() {
@@ -36,7 +36,7 @@ app.controller('MainController', function($scope){
                                }
                                return val;
                             });
-    $scope.toggleForm()
+    toggleForm()
   };
 
   $scope.editTour = function(tour) {
@@ -45,9 +45,9 @@ app.controller('MainController', function($scope){
     $scope.tourForm = tour;
   };
 
-  $scope.reset = function() {
+  function reset() {
     $scope.tourForm = angular.copy($scope.master);
   };
 
-  $scope.reset();
+  reset();
 });
