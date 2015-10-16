@@ -9,45 +9,54 @@ app.controller('MainController', function($scope){
     $scope.tours = [];
   }
 
-
   $scope.master = {};
-
-  $scope.cancel = function() {
-    toggleForm();
-  }
-
-  function toggleForm() {
-    $scope.showTheForm = !$scope.showTheForm
-    reset();
-  }
 
   $scope.newTour = function () {
     $scope.tourIsNew = true;
-    toggleForm();
+    toggleNewForm();
   }
 
-  $scope.addOrUpdateTour = function() {
-    if ($scope.tourIsNew) {
-      $scope.tours.push(angular.copy($scope.tourForm))
-    }
+  $scope.create = function(tour) {
+    $scope.tours.push(angular.copy($scope.tour))
+    save(tour)
+    toggleNewForm()
+  };
+
+  $scope.editTour = function(tour) {
+    tour.state = 'edit';
+    $scope.tourForm = tour;
+  };
+
+  $scope.update = function(tour) {
+    tour.state = '';
+    save(tour)
+  };
+
+  function save(tour) {
     localStorage['tours'] = JSON.stringify($scope.tours, function (key, val) {
                                if (key == '$$hashKey') {
                                    return undefined;
                                }
                                return val;
                             });
-    toggleForm()
-  };
-
-  $scope.editTour = function(tour) {
-    $scope.tourIsNew = false;
-    $scope.showTheForm = true;
-    $scope.tourForm = tour;
-  };
+  }
 
   function reset() {
-    $scope.tourForm = angular.copy($scope.master);
+    $scope.tour = angular.copy($scope.master);
   };
+
+  $scope.cancel = function(tour) {
+    tour.state = '';
+  }
+
+  $scope.cancelNew = function() {
+    toggleNewForm();
+  }
+
+  function toggleNewForm() {
+    $scope.showTheForm = !$scope.showTheForm
+    reset();
+  }
 
   reset();
 });
