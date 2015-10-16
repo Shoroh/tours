@@ -2,51 +2,56 @@
 
 var app = angular.module('tours', []);
 
-app.controller('MainController', function($scope){
-  if (localStorage['tours']) {
-    $scope.tours = JSON.parse(localStorage['tours']);
-  } else {
-    $scope.tours = [];
+app.controller('ToursController', function($scope){
+  $scope.master = {};
+  $scope.backup = [];
+
+  // CRUD
+  function getIndex() {
+    if (localStorage['tours']) {
+      $scope.tours = angular.fromJson(localStorage.getItem('tours'));
+    } else {
+      $scope.tours = [];
+    }
   }
 
-  $scope.master = {};
-
-  $scope.newTour = function () {
-    $scope.tourIsNew = true;
+  $scope.new = function () {
     toggleNewForm();
   }
 
   $scope.create = function(tour) {
-    $scope.tours.push(angular.copy($scope.tour))
-    save(tour)
+    $scope.tours.push(angular.copy(tour))
+    saveAll()
     toggleNewForm()
   };
 
-  $scope.editTour = function(tour) {
+  $scope.edit = function(index, tour) {
+    $scope.backup[index] = angular.copy(tour)
     tour.state = 'edit';
-    $scope.tourForm = tour;
   };
 
   $scope.update = function(tour) {
     tour.state = '';
-    save(tour)
+    saveAll()
   };
 
-  function save(tour) {
-    localStorage['tours'] = JSON.stringify($scope.tours, function (key, val) {
-                               if (key == '$$hashKey') {
-                                   return undefined;
-                               }
-                               return val;
-                            });
+  $scope.destroy = function(index) {
+    $scope.tours.splice(index, 1);
+    saveAll();
+  };
+
+  function saveAll() {
+    localStorage.setItem('tours', angular.toJson($scope.tours));
   }
 
+  // Form Helpers
   function reset() {
     $scope.tour = angular.copy($scope.master);
   };
 
-  $scope.cancel = function(tour) {
-    tour.state = '';
+  $scope.cancel = function(index) {
+    $scope.tours[index] = angular.copy($scope.backup[index]);
+    $scope.backup[index] = {};
   }
 
   $scope.cancelNew = function() {
@@ -54,9 +59,10 @@ app.controller('MainController', function($scope){
   }
 
   function toggleNewForm() {
-    $scope.showTheForm = !$scope.showTheForm
+    $scope.showNewForm = !$scope.showNewForm
     reset();
   }
 
+  getIndex();
   reset();
 });
