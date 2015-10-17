@@ -1,0 +1,54 @@
+<div class="row">
+    <div class="col-md-12">
+        <button ng-click='new()' type="button" class="btn btn-default navbar-btn">Add Country</button>
+        <form novalidate class='new-country' ng-show="showNewForm">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <input ng-model="country.title" type="text" class="form-control" placeholder="Name of country">
+                    </div>
+                </div>
+                <input type="submit" value="Создать" ng-click="create(country)" class="btn btn-primary">
+                <button ng-click="cancelNew(country)" type="button" class="btn btn-default">Отмена</button>
+            </div>
+        </form>
+
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr class="total">
+                        <td>
+                            Total — {{ countries.length }}
+                        </td>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    <tr ng-repeat='country in countries'>
+                        <td ng-show="country.state != 'edit'">
+                            <span class="title">{{ country.title }}</span>
+                            <button ng-click='edit($index, country)' class='btn btn-sm btn-default'><i class="glyphicon glyphicon-pencil"></i></button>
+                            <button ng-click='destroy($index)' class='btn btn-sm btn-danger'><i class="glyphicon glyphicon-trash"></i></button>
+                        </td>
+                        <td ng-show="country.state=='edit'">
+                            <form novalidate class="table-form">
+                                <input ng-model="country.id" type="text" class="form-control table-form-id input-sm">
+                                <input ng-model="country.title" type="text" class="form-control table-form-input input-sm" placeholder="Title of Country">
+                                <button type="submit" ng-click="update(country)" class="btn btn-primary btn-sm">
+                                    <i class="glyphicon glyphicon-ok"></i>
+                                </button>
+                                <button ng-click="cancel($index)" type="button" class="btn btn-default btn-sm">
+                                    <i class="glyphicon glyphicon-remove"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

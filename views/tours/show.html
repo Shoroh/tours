@@ -1,4 +1,15 @@
-<h3>{{ tour.title }}</h3>
-<p>
-  {{ tour.body }}
-</p>
+<div class="media">
+    <div class="media-left">
+        <a href="#">
+            <img class="media-object" ng-src="{{ imagePath(tour) }}" width="100px">
+        </a>
+    </div>
+    <div class="media-body">
+        <h4 class="media-heading">{{ tour.title }}</h4>
+        <span class="text-muted">{{ countryTitle(tour) }}</span>
+
+        <p>{{ tour.body }}</p>
+
+        <p>{{ tour.price | currency }}</p>
+    </div>
+</div>
