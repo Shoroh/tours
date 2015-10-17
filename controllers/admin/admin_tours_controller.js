@@ -13,6 +13,8 @@ angular.module('tours').controller('AdminToursController', function ($scope) {
     };
 
     $scope.create = function (tour) {
+        tour.slug = tour.slug || 'default_slug';
+        tour.country = tour.country || '0';
         $scope.tours.push(angular.copy(tour));
         saveAll();
         toggleNewForm()

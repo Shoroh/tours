@@ -1,6 +1,29 @@
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/#/">
+                Tours!
+            </a>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="/">User Area</a></li>
+        </ul>
+    </div>
+</nav>
+
+<ul class="nav nav-pills">
+    <li role="presentation"><a href="/admin/tours">Tours</a></li>
+    <li role="presentation" class="active"><a href="/admin/countries">Countries</a></li>
+</ul>
+
 <div class="row">
     <div class="col-md-12">
-        <button ng-click='new()' type="button" class="btn btn-default navbar-btn">Add Country</button>
+        <button ng-click='new()' type="button" class="pull-right btn btn-default navbar-btn">Add new country</button>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
         <form novalidate class='new-country' ng-show="showNewForm">
             <div class="row">
                 <div class="col-md-3">
@@ -8,8 +31,8 @@
                         <input ng-model="country.title" type="text" class="form-control" placeholder="Name of country">
                     </div>
                 </div>
-                <input type="submit" value="Создать" ng-click="create(country)" class="btn btn-primary">
-                <button ng-click="cancelNew(country)" type="button" class="btn btn-default">Отмена</button>
+                <button type="submit" ng-click="create(country)" class="btn btn-primary">Create</button>
+                <button ng-click="cancelNew(country)" type="button" class="btn btn-default">Cancel</button>
             </div>
         </form>
 
@@ -28,7 +51,7 @@
                     </tr>
                 </tfoot>
                 <tbody>
-                    <tr ng-repeat='country in countries'>
+                    <tr ng-repeat="country in countries | orderBy:'id' ">
                         <td ng-show="country.state != 'edit'">
                             <span class="title">{{ country.title }}</span>
                             <button ng-click='edit($index, country)' class='btn btn-sm btn-default'><i class="glyphicon glyphicon-pencil"></i></button>
