@@ -25,7 +25,7 @@
                 <label for="countryFilter" class="col-md-6 control-label">Chose country</label>
                 <div class="col-md-6">
                     <select ng-model="countryFilter.country" class="form-control" id="countryFilter">
-                        <option value=""></option>
+                        <option value="">All countries</option>
                         <option ng-repeat="country in countries" value="{{ country.id }}">{{ country.title }}</option>
                     </select>
                 </div>

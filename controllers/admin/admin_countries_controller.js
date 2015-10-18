@@ -1,6 +1,5 @@
 angular.module('tours').controller('AdminCountriesController', function ($scope) {
     $scope.master = {};
-    $scope.backup = [];
 
     // CRUD
     function getIndex() {
@@ -19,7 +18,6 @@ angular.module('tours').controller('AdminCountriesController', function ($scope)
     };
 
     $scope.edit = function (index, country) {
-        $scope.backup[index] = angular.copy(country);
         country.state = 'edit';
     };
 
@@ -42,9 +40,8 @@ angular.module('tours').controller('AdminCountriesController', function ($scope)
         $scope.country = angular.copy($scope.master);
     }
 
-    $scope.cancel = function (index) {
-        $scope.countries[index] = angular.copy($scope.backup[index]);
-        $scope.backup[index] = {};
+    $scope.cancel = function (country) {
+        country.state = '';
     };
 
     $scope.cancelNew = function () {

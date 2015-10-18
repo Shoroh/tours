@@ -59,12 +59,12 @@
                         </td>
                         <td ng-show="country.state=='edit'">
                             <form novalidate class="table-form">
-                                <input ng-model="country.id" type="text" class="form-control table-form-id input-sm">
+                                <input ng-model="country.id" type="number" class="form-control table-form-id input-sm">
                                 <input ng-model="country.title" type="text" class="form-control table-form-input input-sm" placeholder="Title of Country">
                                 <button type="submit" ng-click="update(country)" class="btn btn-primary btn-sm">
                                     <i class="glyphicon glyphicon-ok"></i>
                                 </button>
-                                <button ng-click="cancel($index)" type="button" class="btn btn-default btn-sm">
+                                <button ng-click="cancel(country)" type="button" class="btn btn-default btn-sm">
                                     <i class="glyphicon glyphicon-remove"></i>
                                 </button>
                             </form>
