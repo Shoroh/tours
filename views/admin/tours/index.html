@@ -1,0 +1,149 @@
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/#/">
+                Tours!
+            </a>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="/">User Area</a></li>
+        </ul>
+    </div>
+</nav>
+
+<ul class="nav nav-pills">
+    <li role="presentation" class="active"><a href="/admin/tours">Tours</a></li>
+    <li role="presentation"><a href="/admin/countries">Countries</a></li>
+</ul>
+
+<div class="row">
+    <div class="col-md-12">
+        <button ng-click='new()' type="button" class="pull-right btn btn-default navbar-btn">Add new Tour</button>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <form novalidate class='new-tour' ng-show="showNewForm">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <input ng-model="tour.title" type="text" class="form-control" id="newTourTitle"
+                               placeholder="Title">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <select ng-model="tour.country" class="form-control" prompt="Chose Country">
+                            <option value="">Chose country</option>
+                            <option ng-repeat="country in countries" value="{{country.id}}">{{country.title}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input ng-model="tour.image" type="text" class="form-control"
+                               placeholder="image">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input ng-model="tour.slug" type="text" class="form-control" id="newTourSlug"
+                               placeholder="slug">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon">$</span>
+                            <input ng-model="tour.price" type="number" class="form-control"
+                                   aria-label="Amount (to the nearest dollar)">
+                            <span class="input-group-addon">.00</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <textarea ng-model="tour.body" type="text" class="form-control" id="newTourBody"
+                                  placeholder="Description"></textarea>
+                    </div>
+                    <button type="submit" ng-click="create(tour)" class="btn btn-primary">Create</button>
+                    <button ng-click="cancelNew(tour)" type="button" class="btn btn-default">Cancel</button>
+                </div>
+            </div>
+        </form>
+
+        <ul class='media-list' ng-repeat='tour in tours'>
+            <li class="media" ng-show="tour.state != 'edit'">
+                <div class="media-left">
+                    <a href="#">
+                        <img class="media-object" ng-src="{{ imagePath(tour) }}" width="100px">
+                    </a>
+                </div>
+                <div class="media-body">
+                    <a ng-href="/#/tours/{{ tour.slug }}">
+                        <h4 class="media-heading">{{ tour.title }}</h4>
+                    </a>
+                    <span class="text-muted">{{ countryTitle(tour) }}</span>
+
+                    <p>{{ tour.body | limitTo:150 }}...</p>
+
+                    <p class='pull-right'>{{ tour.price | currency }}</p>
+                    <a ng-click='edit($index, tour)' href='' class='btn btn-xs btn-default'>Edit Tour</a>
+                    <a ng-click='destroy($index)' href='' class='btn btn-xs btn-danger'>Delete Tour</a>
+                </div>
+            </li>
+
+            <form novalidate class='new-tour' ng-show="tour.state=='edit'">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <input ng-model="tour.title" type="text" class="form-control"
+                                   placeholder="Title">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <select ng-model="tour.country" class="form-control">
+                                <option value="">Chose country</option>
+                                <option ng-repeat="country in countries" value="{{country.id}}">{{country.title}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <input ng-model="tour.image" type="text" class="form-control"
+                                   placeholder="image">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <input ng-model="tour.slug" type="text" class="form-control"
+                                   placeholder="slug">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">$</span>
+                                <input ng-model="tour.price" type="number" class="form-control"
+                                       aria-label="Amount (to the nearest dollar)">
+                                <span class="input-group-addon">.00</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <textarea ng-model="tour.body" type="text" class="form-control"
+                                      placeholder="Description"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <button type="submit" ng-click="update(tour)" class="btn btn-primary">Update</button>
+                        <button ng-click="cancel($index)" type="button" class="btn btn-default">Cancel</button>
+                    </div>
+                </div>
+            </form>
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,56 @@
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/#/">
+                Tours!
+            </a>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="admin/tours">Admin Area</a></li>
+        </ul>
+    </div>
+</nav>
+
+<div class="row">
+    <div class="col-md-7">
+        <button ng-click="vm.changeReverse()" class="btn btn-default">
+            Sort by price
+            <i ng-show="!vm.sortReverse" class="glyphicon glyphicon-sort-by-order"></i>
+            <i ng-show="vm.sortReverse" class="glyphicon glyphicon-sort-by-order-alt"></i>
+        </button>
+    </div>
+    <div class="col-md-5">
+        <form class="form-horizontal" role="filter">
+            <div class="form-group">
+                <label for="countryFilter" class="col-md-6 control-label">Chose country</label>
+                <div class="col-md-6">
+                    <select ng-model="countryFilter.country" class="form-control" id="countryFilter">
+                        <option value="">All countries</option>
+                        <option ng-repeat="country in vm.countries" value="{{ country.id }}">{{ country.title }}</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-12">
+        <ul class='media-list' ng-repeat="tour in vm.tours | orderBy:'price':vm.sortReverse | filter:{'country': countryFilter.country}">
+            <li class="media" ng-show="tour.state != 'edit'">
+                <div class="media-left">
+                    <a href="#">
+                        <img class="media-object" ng-src="{{ vm.imagePath(tour) }}" width="100px">
+                    </a>
+                </div>
+                <div class="media-body">
+                    <a ng-href="/#/tours/{{ tour.slug }}">
+                        <h4 class="media-heading">{{ tour.title }}</h4>
+                    </a>
+                    <span class="text-muted">{{ vm.countryTitle(tour) }}</span>
+
+                    <p>{{ tour.body | limitTo:150 }}...</p>
+
+                    <p class='pull-right'>{{ tour.price | currency }}</p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>

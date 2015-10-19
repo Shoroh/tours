@@ -1,0 +1,77 @@
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/#/">
+                Tours!
+            </a>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="/">User Area</a></li>
+        </ul>
+    </div>
+</nav>
+
+<ul class="nav nav-pills">
+    <li role="presentation"><a href="/admin/tours">Tours</a></li>
+    <li role="presentation" class="active"><a href="/admin/countries">Countries</a></li>
+</ul>
+
+<div class="row">
+    <div class="col-md-12">
+        <button ng-click='new()' type="button" class="pull-right btn btn-default navbar-btn">Add new country</button>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <form novalidate class='new-country' ng-show="showNewForm">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <input ng-model="country.title" type="text" class="form-control" placeholder="Name of country">
+                    </div>
+                </div>
+                <button type="submit" ng-click="create(country)" class="btn btn-primary">Create</button>
+                <button ng-click="cancelNew(country)" type="button" class="btn btn-default">Cancel</button>
+            </div>
+        </form>
+
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr class="total">
+                        <td>
+                            Total — {{ countries.length }}
+                        </td>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    <tr ng-repeat="country in countries | orderBy:'id' ">
+                        <td ng-show="country.state != 'edit'">
+                            <span class="title">{{ country.title }}</span>
+                            <button ng-click='edit(country)' class='btn btn-sm btn-default'><i class="glyphicon glyphicon-pencil"></i></button>
+                            <button ng-click='destroy($index)' class='btn btn-sm btn-danger'><i class="glyphicon glyphicon-trash"></i></button>
+                        </td>
+                        <td ng-show="country.state=='edit'">
+                            <form novalidate class="table-form">
+                                <input ng-model="country.id" type="number" class="form-control table-form-id input-sm">
+                                <input ng-model="country.title" type="text" class="form-control table-form-input input-sm" placeholder="Title of Country">
+                                <button type="submit" ng-click="update(country)" class="btn btn-primary btn-sm">
+                                    <i class="glyphicon glyphicon-ok"></i>
+                                </button>
+                                <button ng-click="cancel(country)" type="button" class="btn btn-default btn-sm">
+                                    <i class="glyphicon glyphicon-remove"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,3 +1,23 @@
 form.new-tour {
-  margin-bottom: 20px;
-};
+    margin-bottom: 20px;
+    margin-top: 10px;
+}
+
+.total > td {
+    text-align: right;
+}
+
+span.title {
+    width: 276px;
+    display: inline-block;
+}
+
+form.table-form > input.table-form-input {
+    width: 223px;
+    display: inline-block;
+}
+
+form.table-form > input.table-form-id {
+    width: 50px;
+    display: inline-block;
+}

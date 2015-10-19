@@ -1,0 +1,28 @@
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/#/">
+                Tours!
+            </a>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="admin/tours">Admin Area</a></li>
+        </ul>
+    </div>
+</nav>
+
+<div class="media">
+    <div class="media-left">
+        <a href="#">
+            <img class="media-object" ng-src="{{ vm.imagePath(vm.tour) }}" width="100px">
+        </a>
+    </div>
+    <div class="media-body">
+        <h4 class="media-heading">{{ vm.tour.title }}</h4>
+        <span class="text-muted">{{ vm.countryTitle(vm.tour) }}</span>
+
+        <p>{{ vm.tour.body }}</p>
+
+        <p>{{ vm.tour.price | currency }}</p>
+    </div>
+</div>
