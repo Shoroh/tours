@@ -54,7 +54,7 @@
                     <tr ng-repeat="country in countries | orderBy:'id' ">
                         <td ng-show="country.state != 'edit'">
                             <span class="title">{{ country.title }}</span>
-                            <button ng-click='edit($index, country)' class='btn btn-sm btn-default'><i class="glyphicon glyphicon-pencil"></i></button>
+                            <button ng-click='edit(country)' class='btn btn-sm btn-default'><i class="glyphicon glyphicon-pencil"></i></button>
                             <button ng-click='destroy($index)' class='btn btn-sm btn-danger'><i class="glyphicon glyphicon-trash"></i></button>
                         </td>
                         <td ng-show="country.state=='edit'">

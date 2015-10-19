@@ -17,7 +17,7 @@ angular.module('tours').controller('AdminCountriesController', function ($scope)
         toggleNewForm()
     };
 
-    $scope.edit = function (index, country) {
+    $scope.edit = function (country) {
         country.state = 'edit';
     };
 

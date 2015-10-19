@@ -14,15 +14,15 @@
 <div class="media">
     <div class="media-left">
         <a href="#">
-            <img class="media-object" ng-src="{{ imagePath(tour) }}" width="100px">
+            <img class="media-object" ng-src="{{ vm.imagePath(vm.tour) }}" width="100px">
         </a>
     </div>
     <div class="media-body">
-        <h4 class="media-heading">{{ tour.title }}</h4>
-        <span class="text-muted">{{ countryTitle(tour) }}</span>
+        <h4 class="media-heading">{{ vm.tour.title }}</h4>
+        <span class="text-muted">{{ vm.countryTitle(vm.tour) }}</span>
 
-        <p>{{ tour.body }}</p>
+        <p>{{ vm.tour.body }}</p>
 
-        <p>{{ tour.price | currency }}</p>
+        <p>{{ vm.tour.price | currency }}</p>
     </div>
 </div>

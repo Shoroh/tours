@@ -16,15 +16,12 @@ function ToursController() {
         getTours();
     }
 
-    // CRUD
     function getTours() {
         vm.tours = allTours;
-        return vm.tours;
     }
 
     function getCountries() {
         vm.countries = allCountries;
-        return vm.countries;
     }
 
     function changeReverse () {
