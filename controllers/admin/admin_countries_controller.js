@@ -1,58 +1,82 @@
-angular.module('tours').controller('AdminCountriesController', function ($scope) {
-    $scope.master = {};
+angular.module('tours').controller('AdminCountriesController', AdminCountriesController);
+
+function AdminCountriesController() {
+    "use strict";
+    var vm         = this;
+    vm.country     = {};
+    vm.countries   = [];
+    vm.showNewForm = false;
+
+    vm.newCountry       = newCountry;
+    vm.createCountry    = createCountry;
+    vm.editCountry      = editCountry;
+    vm.updateCountry    = updateCountry;
+    vm.destroyCountry   = destroyCountry;
+    vm.cancelCountry    = cancelCountry;
+    vm.cancelNewCountry = cancelNewCountry;
+
+    var masterCountry = {};
+    var backupCountry = [];
 
     // CRUD
-    function getIndex() {
-        $scope.countries = allCountries;
+    function init () {
+        reset();
+        getCountries();
     }
 
-    $scope.new = function () {
-        toggleNewForm();
-    };
+    function getCountries () {
+        vm.countries = allCountries;
+    }
 
-    $scope.create = function (country) {
-        country.id = allCountries.length + 1;
-        $scope.countries.push(angular.copy(country));
+    function newCountry () {
+        toggleNewForm();
+    }
+
+    function createCountry (country) {
+        country.id    = allCountries.length + 1;
+        country.state = 'idle';
+        vm.countries.push(angular.copy(country));
         saveAll();
         toggleNewForm()
-    };
+    }
 
-    $scope.edit = function (country) {
-        country.state = 'edit';
-    };
+    function editCountry (index, country) {
+        backupCountry[index] = angular.copy(country);
+        country.state        = 'edit';
+    }
 
-    $scope.update = function (country) {
-        country.state = '';
+    function updateCountry (country) {
+        country.state = 'idle';
         saveAll()
-    };
+    }
 
-    $scope.destroy = function (index) {
-        $scope.countries.splice(index, 1);
+    function destroyCountry (index) {
+        vm.countries.splice(index, 1);
         saveAll();
-    };
+    }
 
     function saveAll() {
-        localStorage.setItem('countries', angular.toJson($scope.countries));
+        localStorage.setItem('countries', angular.toJson(vm.countries));
     }
 
     // Form Helpers
     function reset() {
-        $scope.country = angular.copy($scope.master);
+        vm.country = angular.copy(masterCountry);
     }
 
-    $scope.cancel = function (country) {
-        country.state = '';
-    };
+    function cancelCountry (index) {
+        vm.countries[index]  = angular.copy(backupCountry[index]);
+        backupCountry[index] = {};
+    }
 
-    $scope.cancelNew = function () {
+    function cancelNewCountry () {
         toggleNewForm();
-    };
+    }
 
     function toggleNewForm() {
-        $scope.showNewForm = !$scope.showNewForm;
+        vm.showNewForm = !vm.showNewForm;
         reset();
     }
 
-    getIndex();
-    reset();
-});
+    init();
+}

@@ -18,21 +18,21 @@
 
 <div class="row">
     <div class="col-md-12">
-        <button ng-click='new()' type="button" class="pull-right btn btn-default navbar-btn">Add new country</button>
+        <button ng-click='vm.newCountry()' type="button" class="pull-right btn btn-default navbar-btn">Add new country</button>
     </div>
 </div>
 
 <div class="row">
     <div class="col-md-12">
-        <form novalidate class='new-country' ng-show="showNewForm">
+        <form novalidate class='new-country' ng-show="vm.showNewForm">
             <div class="row">
                 <div class="col-md-3">
                     <div class="form-group">
-                        <input ng-model="country.title" type="text" class="form-control" placeholder="Name of country">
+                        <input ng-model="vm.country.title" type="text" class="form-control" placeholder="Name of country">
                     </div>
                 </div>
-                <button type="submit" ng-click="create(country)" class="btn btn-primary">Create</button>
-                <button ng-click="cancelNew(country)" type="button" class="btn btn-default">Cancel</button>
+                <button type="submit" ng-click="vm.createCountry(vm.country)" class="btn btn-primary">Create</button>
+                <button ng-click="vm.cancelNewCountry(vm.country)" type="button" class="btn btn-default">Cancel</button>
             </div>
         </form>
 
@@ -46,25 +46,25 @@
                 <tfoot>
                     <tr class="total">
                         <td>
-                            Total — {{ countries.length }}
+                            Total — {{ vm.countries.length }}
                         </td>
                     </tr>
                 </tfoot>
                 <tbody>
-                    <tr ng-repeat="country in countries | orderBy:'id' ">
-                        <td ng-show="country.state != 'edit'">
+                    <tr ng-repeat="country in vm.countries | orderBy:'id' ">
+                        <td ng-show="country.state == 'idle'">
                             <span class="title">{{ country.title }}</span>
-                            <button ng-click='edit(country)' class='btn btn-sm btn-default'><i class="glyphicon glyphicon-pencil"></i></button>
-                            <button ng-click='destroy($index)' class='btn btn-sm btn-danger'><i class="glyphicon glyphicon-trash"></i></button>
+                            <button ng-click='vm.editCountry($index, country)' class='btn btn-sm btn-default'><i class="glyphicon glyphicon-pencil"></i></button>
+                            <button ng-click='vm.destroyCountry($index)' class='btn btn-sm btn-danger'><i class="glyphicon glyphicon-trash"></i></button>
                         </td>
                         <td ng-show="country.state=='edit'">
                             <form novalidate class="table-form">
                                 <input ng-model="country.id" type="number" class="form-control table-form-id input-sm">
                                 <input ng-model="country.title" type="text" class="form-control table-form-input input-sm" placeholder="Title of Country">
-                                <button type="submit" ng-click="update(country)" class="btn btn-primary btn-sm">
+                                <button type="submit" ng-click="vm.updateCountry(country)" class="btn btn-primary btn-sm">
                                     <i class="glyphicon glyphicon-ok"></i>
                                 </button>
-                                <button ng-click="cancel(country)" type="button" class="btn btn-default btn-sm">
+                                <button ng-click="vm.cancelCountry($index)" type="button" class="btn btn-default btn-sm">
                                     <i class="glyphicon glyphicon-remove"></i>
                                 </button>
                             </form>
