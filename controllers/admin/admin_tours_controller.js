@@ -1,14 +1,17 @@
 angular.module('tours').controller('AdminToursController', AdminToursController);
 
-function AdminToursController() {
+AdminToursController.$inject = ['$resource', '$q'];
+
+function AdminToursController(resource, q) {
     "use strict";
     var vm         = this;
-    vm.tour        = {};
+    vm.newTour     = {};
     vm.tours       = [];
     vm.countries   = [];
+    vm.places      = [];
     vm.showNewForm = false;
 
-    vm.newTour       = newTour;
+    vm.toggleNewForm = toggleNewForm;
     vm.createTour    = createTour;
     vm.editTour      = editTour;
     vm.updateTour    = updateTour;
@@ -17,35 +20,57 @@ function AdminToursController() {
     vm.cancelNewTour = cancelNewTour;
     vm.imagePath     = imagePath;
     vm.countryTitle  = countryTitle;
+    vm.placeTitle    = placeTitle;
 
-    var masterTour = {};
     var backupTour = [];
+
+    function parseResults(data, headerGetter) {
+        data = angular.fromJson(data);
+        return data.results;
+    }
+
+    var Tour = resource('https://api.parse.com/1/classes/Tour/:objectId',
+        {objectId: '@objectId'},
+        {
+            query: {isArray: true, transformResponse: parseResults},
+            update: {isArray: false, method: 'PUT'}
+        }
+    );
+
+    var Country = resource('https://api.parse.com/1/classes/Country/:objectId',
+        {objectId: '@objectId'},
+        {query: {isArray: true, transformResponse: parseResults}}
+    );
+
+    var Place = resource('https://api.parse.com/1/classes/Place/:objectId',
+        {objectId: '@objectId'},
+        {query: {isArray: true, transformResponse: parseResults}}
+    );
 
     // CRUD
     function init () {
         reset();
-        getCountries();
-        getTours();
-    }
+        vm.countries = Country.query();
+        vm.places = Place.query();
 
-    function getTours () {
-        vm.tours = allTours;
-    }
-
-    function getCountries () {
-        vm.countries = allCountries;
-    }
-
-    function newTour () {
-        toggleNewForm();
+        q.all([vm.countries, vm.places]).then(
+            function(data) {
+                vm.tours = Tour.query();
+            }
+        );
     }
 
     function createTour (tour) {
         tour.slug    = tour.slug || 'default_slug';
-        tour.country = tour.country || 0;
         tour.state   = 'idle';
-        vm.tours.push(angular.copy(tour));
-        saveAll();
+        var tourToServer = new Tour(tour);
+        tourToServer.$save().then(
+            function(tour) {
+                var tourFromServer = angular.extend(tour, vm.newTour);
+                vm.tours.push(tourFromServer);
+                vm.newTour = {};
+            }
+        );
         toggleNewForm()
     }
 
@@ -55,22 +80,27 @@ function AdminToursController() {
     }
 
     function updateTour (tour) {
-        tour.state = 'idle';
-        saveAll()
+        tour.state   = 'idle';
+        var tourToServer = new Tour(tour);
+        tourToServer.$update();
     }
 
-    function destroyTour (index) {
-        vm.tours.splice(index, 1);
-        saveAll();
-    }
-
-    function saveAll() {
-        localStorage.setItem('tours', angular.toJson(vm.tours));
+    function destroyTour (index, tour) {
+        tour.state = 'deleting';
+        tour.$delete().then(
+            function(tour) {
+                vm.tours.splice(index, 1)
+            }
+        ).catch(
+            function(tour) {
+                tour.state = 'idle'
+            }
+        );
     }
 
     // Form Helpers
     function reset() {
-        vm.tour = angular.copy(masterTour);
+        vm.newTour = {};
     }
 
     function cancelTour (index) {
@@ -80,11 +110,11 @@ function AdminToursController() {
 
     function cancelNewTour () {
         toggleNewForm();
+        reset();
     }
 
     function toggleNewForm() {
         vm.showNewForm = !vm.showNewForm;
-        reset();
     }
 
     // Decorator
@@ -97,11 +127,19 @@ function AdminToursController() {
     }
 
     function countryTitle (tour) {
-        var country = allCountries.filter(function(country) {
-            return country.id == tour.country;
+        var country = vm.countries.filter(function(country) {
+            return country.objectId == tour.country;
         });
         return country[0]? country[0].title : 'Unknown'
     }
+
+    function placeTitle (tour) {
+        var place = vm.places.filter(function(place) {
+            return place.objectId == tour.place;
+        });
+        return place[0]? place[0].title : 'Unknown'
+    }
+
 
     init();
 }

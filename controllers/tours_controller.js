@@ -1,6 +1,8 @@
 angular.module('tours').controller('ToursController', ToursController);
 
-function ToursController() {
+ToursController.$inject = ['$resource', '$q'];
+
+function ToursController(resource, q) {
     "use strict";
     var vm            = this;
     vm.tours          = [];
@@ -10,18 +12,37 @@ function ToursController() {
     vm.changeReverse  = changeReverse;
     vm.imagePath      = imagePath;
     vm.countryTitle   = countryTitle;
+    vm.placeTitle     = placeTitle;
+
+    function parseResults(data, headerGetter) {
+        data = angular.fromJson(data);
+        return data.results;
+    }
+
+    var Tour = resource('https://api.parse.com/1/classes/Tour/:objectId',
+        {objectId: '@objectId'},
+        {query: {isArray: true, transformResponse: parseResults}}
+    );
+
+    var Country = resource('https://api.parse.com/1/classes/Country/:objectId',
+        {objectId: '@objectId'},
+        {query: {isArray: true, transformResponse: parseResults}}
+    );
+
+    var Place = resource('https://api.parse.com/1/classes/Place/:objectId',
+        {objectId: '@objectId'},
+        {query: {isArray: true, transformResponse: parseResults}}
+    );
 
     function init() {
-        getCountries();
-        getTours();
-    }
+        vm.countries = Country.query();
+        vm.places = Place.query();
 
-    function getTours() {
-        vm.tours = allTours;
-    }
-
-    function getCountries() {
-        vm.countries = allCountries;
+        q.all([vm.countries, vm.places]).then(
+            function(data) {
+                vm.tours = Tour.query();
+            }
+        );
     }
 
     function changeReverse () {
@@ -38,10 +59,17 @@ function ToursController() {
     }
 
     function countryTitle (tour) {
-        var country = allCountries.filter(function(country) {
-            return country.id == tour.country;
+        var country = vm.countries.filter(function(country) {
+            return country.objectId == tour.country;
         });
-        return country? country[0].title : null
+        return country[0]? country[0].title : 'Unknown'
+    }
+
+    function placeTitle (tour) {
+        var place = vm.places.filter(function(place) {
+            return place.objectId == tour.place;
+        });
+        return place[0]? place[0].title : 'Unknown'
     }
 
     init();
