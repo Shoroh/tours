@@ -1,13 +1,15 @@
 angular.module('tours').controller('AdminCountriesController', AdminCountriesController);
 
-function AdminCountriesController() {
+AdminCountriesController.$inject = ['$resource'];
+
+function AdminCountriesController(resource) {
     "use strict";
     var vm         = this;
-    vm.country     = {};
+    vm.newCountry  = {};
     vm.countries   = [];
     vm.showNewForm = false;
 
-    vm.newCountry       = newCountry;
+    vm.toggleNewForm    = toggleNewForm;
     vm.createCountry    = createCountry;
     vm.editCountry      = editCountry;
     vm.updateCountry    = updateCountry;
@@ -15,28 +17,39 @@ function AdminCountriesController() {
     vm.cancelCountry    = cancelCountry;
     vm.cancelNewCountry = cancelNewCountry;
 
-    var masterCountry = {};
     var backupCountry = [];
+
+    function parseResults(data, headerGetter) {
+        data = angular.fromJson(data);
+        return data.results;
+    }
+
+    var Country = resource('https://api.parse.com/1/classes/Country/:objectId',
+        {objectId: '@objectId'},
+        {
+            query: {isArray: true, transformResponse: parseResults},
+            update: {isArray: false, method: 'PUT'}
+        }
+    );
 
     // CRUD
     function init () {
         reset();
-        getCountries();
+        vm.countries = Country.query();
     }
 
-    function getCountries () {
-        vm.countries = allCountries;
-    }
-
-    function newCountry () {
-        toggleNewForm();
-    }
 
     function createCountry (country) {
-        country.id    = allCountries.length + 1;
         country.state = 'idle';
-        vm.countries.push(angular.copy(country));
-        saveAll();
+        var countryToServer = new Country(country);
+        countryToServer.$save().then(
+            function(country) {
+                var countryFromServer = angular.extend(country, vm.newCountry);
+                vm.countries.push(countryFromServer);
+                vm.newCountry = {};
+
+            }
+        );
         toggleNewForm()
     }
 
@@ -47,21 +60,27 @@ function AdminCountriesController() {
 
     function updateCountry (country) {
         country.state = 'idle';
-        saveAll()
+        var countryToServer = new Country(country);
+        countryToServer.$update();
     }
 
-    function destroyCountry (index) {
-        vm.countries.splice(index, 1);
-        saveAll();
+    function destroyCountry (index, country) {
+        country.state = 'deleting';
+        country.$delete().then(
+            function(country) {
+                vm.countries.splice(index, 1)
+            }
+        ).catch(
+            function(country) {
+                country.state = 'idle'
+            }
+        );
     }
 
-    function saveAll() {
-        localStorage.setItem('countries', angular.toJson(vm.countries));
-    }
 
     // Form Helpers
     function reset() {
-        vm.country = angular.copy(masterCountry);
+        vm.newCountry = {};
     }
 
     function cancelCountry (index) {
@@ -75,7 +94,6 @@ function AdminCountriesController() {
 
     function toggleNewForm() {
         vm.showNewForm = !vm.showNewForm;
-        reset();
     }
 
     init();

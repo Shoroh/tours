@@ -1,0 +1,77 @@
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/#/">
+                Tours!
+            </a>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="/">User Area</a></li>
+        </ul>
+    </div>
+</nav>
+
+<ul class="nav nav-pills">
+    <li role="presentation"><a href="/admin/tours">Tours</a></li>
+    <li role="presentation"><a href="/admin/countries">Countries</a></li>
+    <li role="presentation" class="active"><a href="/admin/places">Places</a></li>
+</ul>
+
+<div class="row">
+    <div class="col-md-12">
+        <button ng-click='vm.toggleNewForm()' type="button" class="pull-right btn btn-default navbar-btn">Add new place</button>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <form novalidate class='new-place' ng-show="vm.showNewForm">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <input ng-model="vm.newPlace.title" type="text" class="form-control" placeholder="Name of place">
+                    </div>
+                </div>
+                <button type="submit" ng-click="vm.createPlace(vm.newPlace)" class="btn btn-primary">Create</button>
+                <button ng-click="vm.cancelNewPlace(vm.newPlace)" type="button" class="btn btn-default">Cancel</button>
+            </div>
+        </form>
+
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Title</th>
+                </tr>
+                </thead>
+                <tfoot>
+                <tr class="total">
+                    <td>
+                        Total — {{ vm.places.length }}
+                    </td>
+                </tr>
+                </tfoot>
+                <tbody>
+                <tr ng-repeat="place in vm.places | orderBy:'id' ">
+                    <td ng-show="place.state == 'idle'">
+                        <span class="title">{{ place.title }}</span>
+                        <button ng-click='vm.editPlace($index, place)' class='btn btn-sm btn-default'><i class="glyphicon glyphicon-pencil"></i></button>
+                        <button ng-click='vm.destroyPlace($index, place)' class='btn btn-sm btn-danger'><i class="glyphicon glyphicon-trash"></i></button>
+                    </td>
+                    <td ng-show="place.state=='edit'">
+                        <form novalidate class="table-form">
+                            <input ng-model="place.title" type="text" class="form-control table-form-input input-sm" placeholder="Title of Country">
+                            <button type="submit" ng-click="vm.updatePlace(place)" class="btn btn-primary btn-sm">
+                                <i class="glyphicon glyphicon-ok"></i>
+                            </button>
+                            <button ng-click="vm.cancelPlace($index)" type="button" class="btn btn-default btn-sm">
+                                <i class="glyphicon glyphicon-remove"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

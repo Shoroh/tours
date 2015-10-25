@@ -1,20 +1,42 @@
 angular.module('tours').controller('TourController', TourController);
 
-TourController.$inject = ['$routeParams'];
+TourController.$inject = ['$routeParams', '$resource', '$q'];
 
-function TourController(params) {
+function TourController(params, resource, q) {
     "use strict";
     var vm          = this;
     vm.tour         = {};
     vm.imagePath    = imagePath;
     vm.countryTitle = countryTitle;
+    vm.placeTitle   = placeTitle;
+
+    function parseResults(data, headerGetter) {
+        data = angular.fromJson(data);
+        return data.results;
+    }
+
+    var Tour = resource('https://api.parse.com/1/classes/Tour/:objectId',
+        {objectId: '@objectId'}
+    );
+
+    var Country = resource('https://api.parse.com/1/classes/Country/:objectId',
+        {objectId: '@objectId'},
+        {query: {isArray: true, transformResponse: parseResults}}
+    );
+
+    var Place = resource('https://api.parse.com/1/classes/Place/:objectId',
+        {objectId: '@objectId'},
+        {query: {isArray: true, transformResponse: parseResults}}
+    );
 
     function init() {
-        angular.forEach(allTours, function (tour) {
-            if (params.slug == tour.slug) {
-                vm.tour = tour;
+        vm.countries = Country.query();
+        vm.places = Place.query();
+        q.all([vm.countries, vm.places]).then(
+            function(data) {
+                vm.tour = Tour.get({objectId: params.id});
             }
-        });
+        );
     }
 
     // Decorator
@@ -27,10 +49,17 @@ function TourController(params) {
     }
 
     function countryTitle (tour) {
-        var country = allCountries.filter(function(country) {
-            return country.id == tour.country;
+        var country = vm.countries.filter(function(country) {
+            return country.objectId == tour.country;
         });
-        return country? country[0].title : null
+        return country[0]? country[0].title : 'Unknown'
+    }
+
+    function placeTitle (tour) {
+        var place = vm.places.filter(function(place) {
+            return place.objectId == tour.place;
+        });
+        return place[0]? place[0].title : 'Unknown'
     }
 
     init();

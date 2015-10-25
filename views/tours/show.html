@@ -19,7 +19,20 @@
     </div>
     <div class="media-body">
         <h4 class="media-heading">{{ vm.tour.title }}</h4>
-        <span class="text-muted">{{ vm.countryTitle(vm.tour) }}</span>
+        <ul class="info list-inline">
+            <li class="country">
+                <span class="text-muted">Country:</span>
+                {{ vm.countryTitle(vm.tour) }}
+            </li>
+            <li class="place">
+                <span class="text-muted">Place:</span>
+                {{ vm.placeTitle(vm.tour) }}
+            </li>
+            <li class="days">
+                <span class="text-muted">Days:</span>
+                {{ vm.tour.days }}
+            </li>
+        </ul>
 
         <p>{{ vm.tour.body }}</p>
 

@@ -14,11 +14,12 @@
 <ul class="nav nav-pills">
     <li role="presentation" class="active"><a href="/admin/tours">Tours</a></li>
     <li role="presentation"><a href="/admin/countries">Countries</a></li>
+    <li role="presentation"><a href="/admin/places">Places</a></li>
 </ul>
 
 <div class="row">
     <div class="col-md-12">
-        <button ng-click='vm.newTour()' type="button" class="pull-right btn btn-default navbar-btn">Add new Tour</button>
+        <button ng-click='vm.toggleNewForm()' type="button" class="pull-right btn btn-default navbar-btn">Add new Tour</button>
     </div>
 </div>
 
@@ -28,35 +29,43 @@
             <div class="row">
                 <div class="col-md-3">
                     <div class="form-group">
-                        <input ng-model="vm.tour.title" type="text" class="form-control" id="newTourTitle"
+                        <input ng-model="vm.newTour.title" type="text" class="form-control" id="newTourTitle"
                                placeholder="Title">
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <div class="form-group">
-                        <select ng-model="vm.tour.country" class="form-control" prompt="Chose Country">
+                        <select ng-model="vm.newTour.country" class="form-control" prompt="Chose Country">
                             <option value="">Chose country</option>
-                            <option ng-repeat="country in vm.countries" value="{{country.id}}">{{country.title}}</option>
+                            <option ng-repeat="country in vm.countries" value="{{country.objectId}}">{{country.title}}</option>
                         </select>
                     </div>
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
-                        <input ng-model="vm.tour.image" type="text" class="form-control"
-                               placeholder="image">
+                        <select ng-model="vm.newTour.place" class="form-control" prompt="Chose Place">
+                            <option value="">Chose Place</option>
+                            <option ng-repeat="place in vm.places" value="{{place.objectId}}">{{place.title}}</option>
+                        </select>
                     </div>
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
-                        <input ng-model="vm.tour.slug" type="text" class="form-control" id="newTourSlug"
-                               placeholder="slug">
+                        <input ng-model="vm.newTour.image" type="text" class="form-control"
+                               placeholder="image">
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <div class="form-group">
+                        <input ng-model="vm.newTour.days" type="number" class="form-control" id="newTourDays"
+                               placeholder="days">
                     </div>
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
                         <div class="input-group">
                             <span class="input-group-addon">$</span>
-                            <input ng-model="vm.tour.price" type="number" class="form-control"
+                            <input ng-model="vm.newTour.price" type="number" class="form-control"
                                    aria-label="Amount (to the nearest dollar)">
                             <span class="input-group-addon">.00</span>
                         </div>
@@ -64,11 +73,11 @@
                 </div>
                 <div class="col-md-12">
                     <div class="form-group">
-                        <textarea ng-model="vm.tour.body" type="text" class="form-control" id="newTourBody"
+                        <textarea ng-model="vm.newTour.body" type="text" class="form-control" id="newTourBody"
                                   placeholder="Description"></textarea>
                     </div>
-                    <button type="submit" ng-click="vm.createTour(vm.tour)" class="btn btn-primary">Create</button>
-                    <button ng-click="vm.cancelNewTour(vm.tour)" type="button" class="btn btn-default">Cancel</button>
+                    <button type="submit" ng-click="vm.createTour(vm.newTour)" class="btn btn-primary">Create</button>
+                    <button ng-click="vm.cancelNewTour(vm.newTour)" type="button" class="btn btn-default">Cancel</button>
                 </div>
             </div>
         </form>
@@ -81,16 +90,25 @@
                     </a>
                 </div>
                 <div class="media-body">
-                    <a ng-href="/#/tours/{{ tour.slug }}">
-                        <h4 class="media-heading">{{ tour.title }}</h4>
-                    </a>
-                    <span class="text-muted">{{ vm.countryTitle(tour) }}</span>
-
+                    <h4 class="media-heading">{{ tour.title }}</h4>
+                    <ul class="info list-inline">
+                        <li class="country">
+                            <span class="text-muted">Country:</span>
+                            {{ vm.countryTitle(tour) }}
+                        </li>
+                        <li class="place">
+                            <span class="text-muted">Place:</span>
+                            {{ vm.placeTitle(tour) }}
+                        </li>
+                        <li class="days">
+                            <span class="text-muted">Days:</span>
+                            {{ tour.days }}
+                        </li>
+                    </ul>
                     <p>{{ tour.body | limitTo:150 }}...</p>
-
                     <p class='pull-right'>{{ tour.price | currency }}</p>
                     <button ng-click='vm.editTour($index, tour)' class='btn btn-xs btn-default'>Edit Tour</button>
-                    <button ng-click='vm.destroyTour($index)' class='btn btn-xs btn-danger'>Delete Tour</button>
+                    <button ng-click='vm.destroyTour($index, tour)' class='btn btn-xs btn-danger'>Delete Tour</button>
                 </div>
             </li>
             <form novalidate class='new-tour' ng-show="tour.state=='edit'">
@@ -101,11 +119,19 @@
                                    placeholder="Title">
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <div class="form-group">
                             <select ng-model="tour.country" class="form-control">
                                 <option value="">Chose country</option>
-                                <option ng-repeat="country in vm.countries" value={{country.id}}>{{country.title}}</option>
+                                <option ng-repeat="country in vm.countries" value={{country.objectId}}>{{country.title}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <select ng-model="tour.place" class="form-control" prompt="Chose Place">
+                                <option value="">Chose Place</option>
+                                <option ng-repeat="place in vm.places" value="{{place.objectId}}">{{place.title}}</option>
                             </select>
                         </div>
                     </div>
@@ -115,10 +141,10 @@
                                    placeholder="image">
                         </div>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-1">
                         <div class="form-group">
-                            <input ng-model="tour.slug" type="text" class="form-control"
-                                   placeholder="slug">
+                            <input ng-model="tour.days" type="number" class="form-control"
+                                   placeholder="days">
                         </div>
                     </div>
                     <div class="col-md-2">
