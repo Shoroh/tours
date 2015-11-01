@@ -1,0 +1,84 @@
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/#/">
+                Tours!
+            </a>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="/">User Area</a></li>
+        </ul>
+    </div>
+</nav>
+
+<ul class="nav nav-pills">
+    <li role="presentation"><a href="/admin/tours">Tours</a></li>
+    <li role="presentation"><a href="/admin/countries">Countries</a></li>
+    <li role="presentation" ng-show="vm.country.title"><a href="/admin/countries/{{vm.country.objectId}}">{{ vm.country.title }}</a></li>
+    <li role="presentation" class="active" ng-show="vm.place.title"><a>{{ vm.place.title }}</a></li>
+</ul>
+
+<div class="row">
+    <div class="col-md-12">
+        <button ng-click='vm.toggleNewForm()' ng-show="vm.place.title" type="button" class="pull-right btn btn-default navbar-btn">Add new hotel to {{ vm.place.title }}</button>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <form novalidate class='new-hotel form-inline' ng-show="vm.showNewForm">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <input ng-model="vm.newHotel.title" type="text" class="form-control" hotelholder="Name of hotel">
+                    </div>
+                    <div class="form-group">
+                        <select ng-model="vm.newHotel.stars" ng-options="star for star in vm.stars" class="form-control hotel-stars-input"></select>
+                    </div>
+                </div>
+                <button type="submit" ng-click="vm.createHotel(vm.newHotel)" class="btn btn-primary">Create</button>
+                <button ng-click="vm.cancelNewHotel(vm.newHotel)" type="button" class="btn btn-default">Cancel</button>
+            </div>
+        </form>
+
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Title</th>
+                </tr>
+                </thead>
+                <tfoot>
+                <tr class="total">
+                    <td>
+                        Total — {{ filtered.length }}
+                    </td>
+                </tr>
+                </tfoot>
+                <tbody>
+                <tr ng-repeat="hotel in filtered = (vm.hotels | orderBy:'id' | filter:{'place': vm.place.objectId}) ">
+                    <td ng-show="hotel.state == 'idle'">
+                        <span class="title">{{ hotel.title }}</span>
+                        <button ng-click='vm.editHotel($index, hotel)' class='btn btn-sm btn-default'><i class="glyphicon glyphicon-pencil"></i></button>
+                        <button ng-click='vm.destroyHotel($index, hotel)' class='btn btn-sm btn-danger'><i class="glyphicon glyphicon-trash"></i></button>
+                    </td>
+                    <td ng-show="hotel.state=='edit'">
+                        <div class="admin-hotels-table-item">
+                            <form novalidate class="table-form">
+                                <input ng-model="hotel.title" type="text" class="form-control table-form-input input-sm" hotelholder="Title of Country">
+                                <select ng-model="hotel.stars" ng-options="star for star in vm.stars" class="form-control input-sm hotel-stars-input"></select>
+                                <button type="submit" ng-click="vm.updateHotel(hotel)" class="btn btn-primary btn-sm">
+                                    <i class="glyphicon glyphicon-ok"></i>
+                                </button>
+                                <button ng-click="vm.cancelHotel($index)" type="button" class="btn btn-default btn-sm">
+                                    <i class="glyphicon glyphicon-remove"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -14,12 +14,12 @@
 <ul class="nav nav-pills">
     <li role="presentation"><a href="/admin/tours">Tours</a></li>
     <li role="presentation"><a href="/admin/countries">Countries</a></li>
-    <li role="presentation" class="active"><a href="/admin/places">Places</a></li>
+    <li role="presentation" class="active" ng-show="vm.country.title"><a>{{ vm.country.title }}</a></li>
 </ul>
 
 <div class="row">
     <div class="col-md-12">
-        <button ng-click='vm.toggleNewForm()' type="button" class="pull-right btn btn-default navbar-btn">Add new place</button>
+        <button ng-click='vm.toggleNewForm()' ng-show="vm.country.title" type="button" class="pull-right btn btn-default navbar-btn">Add new place to {{ vm.country.title }}</button>
     </div>
 </div>
 
@@ -47,14 +47,14 @@
                 <tfoot>
                 <tr class="total">
                     <td>
-                        Total — {{ vm.places.length }}
+                        Total — {{ filtered.length }}
                     </td>
                 </tr>
                 </tfoot>
                 <tbody>
-                <tr ng-repeat="place in vm.places | orderBy:'id' ">
+                <tr ng-repeat="place in filtered = (vm.places | orderBy:'id' | filter:{'country': vm.country.objectId}) ">
                     <td ng-show="place.state == 'idle'">
-                        <span class="title">{{ place.title }}</span>
+                        <a href="/admin/countries/{{ vm.country.objectId }}/places/{{ place.objectId}}"><span class="title">{{ place.title }}</span></a>
                         <button ng-click='vm.editPlace($index, place)' class='btn btn-sm btn-default'><i class="glyphicon glyphicon-pencil"></i></button>
                         <button ng-click='vm.destroyPlace($index, place)' class='btn btn-sm btn-danger'><i class="glyphicon glyphicon-trash"></i></button>
                     </td>

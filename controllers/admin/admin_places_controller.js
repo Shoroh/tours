@@ -1,15 +1,16 @@
 angular.module('tours').controller('AdminPlacesController', AdminPlacesController);
 
-AdminPlacesController.$inject = ['$resource'];
+AdminPlacesController.$inject = ['$routeParams', '$resource', '$q'];
 
-function AdminPlacesController(resource) {
+function AdminPlacesController(params, resource, q) {
     "use strict";
     var vm         = this;
     vm.newPlace  = {};
+    vm.country  = {};
     vm.places   = [];
     vm.showNewForm = false;
 
-    vm.toggleNewForm    = toggleNewForm;
+    vm.toggleNewForm  = toggleNewForm;
     vm.createPlace    = createPlace;
     vm.editPlace      = editPlace;
     vm.updatePlace    = updatePlace;
@@ -24,6 +25,10 @@ function AdminPlacesController(resource) {
         return data.results;
     }
 
+    var Country = resource('https://api.parse.com/1/classes/Country/:objectId',
+        {objectId: '@objectId'}
+    );
+
     var Place = resource('https://api.parse.com/1/classes/Place/:objectId',
         {objectId: '@objectId'},
         {
@@ -35,12 +40,17 @@ function AdminPlacesController(resource) {
     // CRUD
     function init () {
         reset();
-        vm.places = Place.query();
+        vm.country = Country.get({objectId: params.id});
+        q.all(vm.country).then(
+            function(data) {
+                vm.places = Place.query();
+            }
+        );
     }
-
 
     function createPlace (place) {
         place.state = 'idle';
+        place.country = vm.country.objectId;
         var placeToServer = new Place(place);
         placeToServer.$save().then(
             function(place) {

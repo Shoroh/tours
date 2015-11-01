@@ -9,6 +9,7 @@ function AdminToursController(resource, q) {
     vm.tours       = [];
     vm.countries   = [];
     vm.places      = [];
+    vm.hotels      = [];
     vm.showNewForm = false;
 
     vm.toggleNewForm = toggleNewForm;
@@ -21,6 +22,7 @@ function AdminToursController(resource, q) {
     vm.imagePath     = imagePath;
     vm.countryTitle  = countryTitle;
     vm.placeTitle    = placeTitle;
+    vm.hotelTitle    = hotelTitle;
 
     var backupTour = [];
 
@@ -47,13 +49,19 @@ function AdminToursController(resource, q) {
         {query: {isArray: true, transformResponse: parseResults}}
     );
 
+    var Hotel = resource('https://api.parse.com/1/classes/Hotel/:objectId',
+        {objectId: '@objectId'},
+        {query: {isArray: true, transformResponse: parseResults}}
+    );
+
     // CRUD
     function init () {
         reset();
         vm.countries = Country.query();
         vm.places = Place.query();
+        vm.hotels = Hotel.query();
 
-        q.all([vm.countries, vm.places]).then(
+        q.all([vm.countries, vm.places, vm.hotels]).then(
             function(data) {
                 vm.tours = Tour.query();
             }
@@ -140,6 +148,12 @@ function AdminToursController(resource, q) {
         return place[0]? place[0].title : 'Unknown'
     }
 
+    function hotelTitle (tour) {
+        var hotel = vm.hotels.filter(function(hotel) {
+            return hotel.objectId == tour.hotel;
+        });
+        return hotel[0]? [hotel[0].title, hotel[0].stars] : 'Unknown'
+    }
 
     init();
 }

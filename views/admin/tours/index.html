@@ -14,7 +14,6 @@
 <ul class="nav nav-pills">
     <li role="presentation" class="active"><a href="/admin/tours">Tours</a></li>
     <li role="presentation"><a href="/admin/countries">Countries</a></li>
-    <li role="presentation"><a href="/admin/places">Places</a></li>
 </ul>
 
 <div class="row">
@@ -45,7 +44,15 @@
                     <div class="form-group">
                         <select ng-model="vm.newTour.place" class="form-control" prompt="Chose Place">
                             <option value="">Chose Place</option>
-                            <option ng-repeat="place in vm.places" value="{{place.objectId}}">{{place.title}}</option>
+                            <option ng-repeat="place in vm.places | filter:{'country': vm.newTour.country}" value="{{place.objectId}}">{{place.title}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <select ng-model="vm.newTour.hotel" class="form-control" prompt="Chose Hotel">
+                            <option value="">Chose Hotel</option>
+                            <option ng-repeat="hotel in vm.hotels | filter:{'place': vm.newTour.place}" value="{{hotel.objectId}}">{{hotel.title}}</option>
                         </select>
                     </div>
                 </div>
@@ -101,6 +108,10 @@
                             {{ vm.placeTitle(tour) }}
                         </li>
                         <li class="days">
+                            <span class="text-muted">Hotel:</span>
+                            {{ vm.hotelTitle(tour)[0] }} — {{ vm.hotelTitle(tour)[1] }}*
+                        </li>
+                        <li class="days">
                             <span class="text-muted">Days:</span>
                             {{ tour.days }}
                         </li>
@@ -131,7 +142,15 @@
                         <div class="form-group">
                             <select ng-model="tour.place" class="form-control" prompt="Chose Place">
                                 <option value="">Chose Place</option>
-                                <option ng-repeat="place in vm.places" value="{{place.objectId}}">{{place.title}}</option>
+                                <option ng-repeat="place in vm.places | filter:{'country': tour.country}" value="{{place.objectId}}">{{place.title}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <select ng-model="tour.hotel" class="form-control" prompt="Chose Hotel">
+                                <option value="">Chose Hotel</option>
+                                <option ng-repeat="hotel in vm.hotels | filter:{'place': tour.place}" value="{{hotel.objectId}}">{{hotel.title}}</option>
                             </select>
                         </div>
                     </div>
