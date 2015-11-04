@@ -17,7 +17,12 @@ form.table-form > input.table-form-input {
     display: inline-block;
 }
 
-form.table-form > input.table-form-id {
-    width: 50px;
+.admin-hotels-table-item > form.table-form > input.table-form-input {
+    width: 230px;
+    display: inline-block;
+}
+
+.admin-hotels-table-item > form.table-form > select.hotel-stars-input {
+    width: 47px;
     display: inline-block;
 }

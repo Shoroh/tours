@@ -23,7 +23,7 @@
         <div class="row">
             <div class="col-md-3">
                 <div class="form-group">
-                    <select ng-model="countryFilter.country" class="form-control" id="countryFilter">
+                    <select ng-change="vm.setPlacesSelect(countryFilter)" ng-model="countryFilter.country" class="form-control" id="countryFilter">
                         <option value="">All countries</option>
                         <option ng-repeat="country in vm.countries" value="{{ country.objectId }}">{{ country.title }}</option>
                     </select>
@@ -31,9 +31,9 @@
             </div>
             <div class="col-md-3">
                 <div class="form-group">
-                    <select ng-model="countryFilter.place" class="form-control" id="placeFilter">
+                    <select ng-show="countryFilter.country" ng-model="countryFilter.place" class="form-control" id="placeFilter">
                         <option value="">All places</option>
-                        <option ng-repeat="place in vm.places" value="{{ place.objectId }}">{{ place.title }}</option>
+                        <option ng-repeat="place in vm.places | filter:{'country': countryFilter.country}" value="{{ place.objectId }}">{{ place.title }}</option>
                     </select>
                 </div>
             </div>
@@ -59,6 +59,10 @@
                         <li class="place">
                             <span class="text-muted">Place:</span>
                             {{ vm.placeTitle(tour) }}
+                        </li>
+                        <li class="days">
+                            <span class="text-muted">Hotel:</span>
+                            {{ vm.hotelTitle(tour)[0] }} — {{ vm.hotelTitle(tour)[1] }}*
                         </li>
                         <li class="days">
                             <span class="text-muted">Days:</span>

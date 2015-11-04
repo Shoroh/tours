@@ -7,12 +7,16 @@ function ToursController(resource, q) {
     var vm            = this;
     vm.tours          = [];
     vm.countries      = [];
+    vm.places         = [];
+    vm.hotels         = [];
     vm.sortReverse    = false;
 
-    vm.changeReverse  = changeReverse;
-    vm.imagePath      = imagePath;
-    vm.countryTitle   = countryTitle;
-    vm.placeTitle     = placeTitle;
+    vm.changeReverse   = changeReverse;
+    vm.imagePath       = imagePath;
+    vm.countryTitle    = countryTitle;
+    vm.placeTitle      = placeTitle;
+    vm.setPlacesSelect = setPlacesSelect;
+    vm.hotelTitle      = hotelTitle;
 
     function parseResults(data, headerGetter) {
         data = angular.fromJson(data);
@@ -34,11 +38,17 @@ function ToursController(resource, q) {
         {query: {isArray: true, transformResponse: parseResults}}
     );
 
+    var Hotel = resource('https://api.parse.com/1/classes/Hotel/:objectId',
+        {objectId: '@objectId'},
+        {query: {isArray: true, transformResponse: parseResults}}
+    );
+
     function init() {
         vm.countries = Country.query();
         vm.places = Place.query();
+        vm.hotels = Hotel.query();
 
-        q.all([vm.countries, vm.places]).then(
+        q.all([vm.countries, vm.places, vm.hotels]).then(
             function(data) {
                 vm.tours = Tour.query();
             }
@@ -47,6 +57,12 @@ function ToursController(resource, q) {
 
     function changeReverse () {
         vm.sortReverse = !vm.sortReverse
+    }
+
+    function setPlacesSelect (countryFilter) {
+        if (countryFilter.country == "") {
+            countryFilter.place = "";
+        }
     }
 
     // Decorator
@@ -70,6 +86,13 @@ function ToursController(resource, q) {
             return place.objectId == tour.place;
         });
         return place[0]? place[0].title : 'Unknown'
+    }
+
+    function hotelTitle (tour) {
+        var hotel = vm.hotels.filter(function(hotel) {
+            return hotel.objectId == tour.hotel;
+        });
+        return hotel[0]? [hotel[0].title, hotel[0].stars] : 'Unknown'
     }
 
     init();

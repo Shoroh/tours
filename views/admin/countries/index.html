@@ -14,7 +14,6 @@
 <ul class="nav nav-pills">
     <li role="presentation"><a href="/admin/tours">Tours</a></li>
     <li role="presentation" class="active"><a href="/admin/countries">Countries</a></li>
-    <li role="presentation"><a href="/admin/places">Places</a></li>
 </ul>
 
 <div class="row">
@@ -54,7 +53,7 @@
                 <tbody>
                     <tr ng-repeat="country in vm.countries | orderBy:'id' ">
                         <td ng-show="country.state == 'idle'">
-                            <span class="title">{{ country.title }}</span>
+                            <a href="/admin/countries/{{ country.objectId }}"><span class="title">{{ country.title }}</span></a>
                             <button ng-click='vm.editCountry($index, country)' class='btn btn-sm btn-default'><i class="glyphicon glyphicon-pencil"></i></button>
                             <button ng-click='vm.destroyCountry($index, country)' class='btn btn-sm btn-danger'><i class="glyphicon glyphicon-trash"></i></button>
                         </td>
