@@ -26,3 +26,25 @@ form.table-form > input.table-form-input {
     width: 47px;
     display: inline-block;
 }
+
+.upload-new-image-link {
+    position: relative;
+    display: block;
+    color: white;
+}
+
+.upload-new-image-link:hover, .upload-new-image-link:focus {
+    color: gold;
+}
+
+.upload-new-image-sign {
+    position: absolute;
+    bottom: 25%;
+    right: 35%;
+    font-size: 3rem;
+    text-shadow: 2px 2px 5px #000;
+}
+
+.media-body > input[type=file] {
+    display: inline;
+}

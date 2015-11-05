@@ -1,8 +1,8 @@
 angular.module('tours').controller('AdminToursController', AdminToursController);
 
-AdminToursController.$inject = ['$resource', '$q'];
+AdminToursController.$inject = ['$resource', '$q', '$http'];
 
-function AdminToursController(resource, q) {
+function AdminToursController(resource, q, http) {
     "use strict";
     var vm         = this;
     vm.newTour     = {};
@@ -12,17 +12,18 @@ function AdminToursController(resource, q) {
     vm.hotels      = [];
     vm.showNewForm = false;
 
-    vm.toggleNewForm = toggleNewForm;
-    vm.createTour    = createTour;
-    vm.editTour      = editTour;
-    vm.updateTour    = updateTour;
-    vm.destroyTour   = destroyTour;
-    vm.cancelTour    = cancelTour;
-    vm.cancelNewTour = cancelNewTour;
-    vm.imagePath     = imagePath;
-    vm.countryTitle  = countryTitle;
-    vm.placeTitle    = placeTitle;
-    vm.hotelTitle    = hotelTitle;
+    vm.toggleNewForm   = toggleNewForm;
+    vm.createTour      = createTour;
+    vm.editTour        = editTour;
+    vm.updateTour      = updateTour;
+    vm.destroyTour     = destroyTour;
+    vm.cancelTour      = cancelTour;
+    vm.cancelNewTour   = cancelNewTour;
+    vm.imagePath       = imagePath;
+    vm.countryTitle    = countryTitle;
+    vm.placeTitle      = placeTitle;
+    vm.hotelTitle      = hotelTitle;
+    vm.uploadFile      = uploadFile;
 
     var backupTour = [];
 
@@ -104,6 +105,31 @@ function AdminToursController(resource, q) {
                 tour.state = 'idle'
             }
         );
+    }
+
+    function uploadFile (file) {
+        var path = file.value;
+        var fileName = path.match(/[^\/\\]+$/)[0];
+        var tourId = file.dataset.tourId;
+        var tour = Tour.get({objectId: tourId});
+        http.post("https://api.parse.com/1/files/" + fileName, file[0], {
+            withCredentials: false,
+            headers: {
+                "X-Parse-Application-Id": "XfANGmiC70rsMi7V4shf1fHfc6o4N8zsNVAOYvGL",
+                "X-Parse-REST-API-Key": "zyDTgHIo63C6Kyp3wD6mflOoUPWJszDPSFtEbLBB",
+                'Content-Type': 'image/jpeg'
+            },
+            transformRequest: angular.identity
+        }).then(function(object) {
+            tour.picture = {
+                "name":     object.data.name,
+                "__type":   "File"
+            };
+            console.log(tour);
+            var tourToServer = new Tour(tour);
+            console.log(tourToServer);
+            tourToServer.$update();
+        });
     }
 
     // Form Helpers

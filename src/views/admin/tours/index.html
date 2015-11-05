@@ -26,7 +26,7 @@
     <div class="col-md-12">
         <form novalidate class='new-tour' ng-show="vm.showNewForm">
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="form-group">
                         <input ng-model="vm.newTour.title" type="text" class="form-control" id="newTourTitle"
                                placeholder="Title">
@@ -58,12 +58,6 @@
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
-                        <input ng-model="vm.newTour.image" type="text" class="form-control"
-                               placeholder="image">
-                    </div>
-                </div>
-                <div class="col-md-1">
-                    <div class="form-group">
                         <input ng-model="vm.newTour.days" type="number" class="form-control" id="newTourDays"
                                placeholder="days">
                     </div>
@@ -92,9 +86,8 @@
         <ul class='media-list' ng-repeat='tour in vm.tours'>
             <li class="media" ng-show="tour.state == 'idle'">
                 <div class="media-left">
-                    <a href="#">
-                        <img class="media-object" ng-src="{{ vm.imagePath(tour) }}" width="100px">
-                    </a>
+                    <!--<img class="media-object" ng-src="{{ vm.imagePath(tour) }}" width="100px">-->
+                    <img class="media-object" ng-src="{{ tour.picture.url }}" width="100px">
                 </div>
                 <div class="media-body">
                     <h4 class="media-heading">{{ tour.title }}</h4>
@@ -120,6 +113,7 @@
                     <p class='pull-right'>{{ tour.price | currency }}</p>
                     <button ng-click='vm.editTour($index, tour)' class='btn btn-xs btn-default'>Edit Tour</button>
                     <button ng-click='vm.destroyTour($index, tour)' class='btn btn-xs btn-danger'>Delete Tour</button>
+                    <input data-tour-id="{{tour.objectId}}" onchange="angular.element(this).scope().vm.uploadFile(this)" type="file">
                 </div>
             </li>
             <form novalidate class='new-tour' ng-show="tour.state=='edit'">
